@@ -42,6 +42,8 @@ AjaxZip3.addr = '';
 AjaxZip3.fstrt = '';
 AjaxZip3.farea = '';
 AjaxZip3.ffocus = true;
+AjaxZip3.fsimple = false;
+AjaxZip3.fcallback = '';
 
 AjaxZip3.PREFMAP = [
     null,       '北海道',   '青森県',   '岩手県',   '宮城県',
@@ -216,5 +218,57 @@ AjaxZip3.zipjsonpquery = function(){
    };
 
 function zipdata(data){
-    AjaxZip3.callback(data);
+    if (AjaxZip3.fsimple) {
+        AjaxZip3.createAddrObj(data, AjaxZip3.fcallback);
+    } else {
+        AjaxZip3.callback(data);
+    }
 };
+
+AjaxZip3.getSimple = function(zip3, zip4, callback) {
+    if (!AjaxZip3.isNumber(zip3) || !AjaxZip3.isNumber(zip4) || typeof callback !== 'function') return;
+    if ((zip3 + zip4).length !== 7) return;
+
+    AjaxZip3.fsimple = true;
+    AjaxZip3.fcallback = callback;
+    AjaxZip3.nzip = zip3 + zip4;
+    AjaxZip3.zipjsonpquery();
+}
+
+AjaxZip3.isNumber = function(n) {
+    if (typeof n != 'number' && typeof n != 'string') {
+        return false;
+    } else {
+        return isFinite(n);
+    }
+}
+
+AjaxZip3.createAddrObj = function(data, callback) {
+    var addr_obj = {
+        pref_id: '',
+        pref_name: '',
+        city: '',
+        area: '',
+        strt: ''
+    }
+
+    var array = data[AjaxZip3.nzip];
+    // Opera バグ対策：0x00800000 を超える添字は +0xff000000 されてしまう
+    var opera = (AjaxZip3.nzip-0+0xff000000)+"";
+    if ( ! array && data[opera] ) array = data[opera];
+
+    if ( ! array ) return addr_obj;
+    addr_obj.pref_id = array[0];                 // 都道府県ID
+    if ( ! addr_obj.pref_id ) return addr_obj;
+    addr_obj.pref_name = AjaxZip3.PREFMAP[addr_obj.pref_id];  // 都道府県名
+    if ( ! addr_obj.pref_name ) return addr_obj;
+
+    addr_obj.city = array[1];
+    if (!addr_obj.city) addr_obj.city = '';              // 市区町村名
+    addr_obj.area = array[2];
+    if (!addr_obj.area) addr_obj.area = '';              // 町域名
+    addr_obj.strt = array[3];
+    if (!addr_obj.strt) addr_obj.strt = '';              // 番地
+
+    callback(addr_obj);
+}
