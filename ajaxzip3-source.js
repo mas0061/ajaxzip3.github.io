@@ -44,13 +44,6 @@ AjaxZip3.farea = '';
 AjaxZip3.ffocus = true;
 AjaxZip3.fsimple = false;
 AjaxZip3.fcallback = '';
-AjaxZip3.addr_obj = {
-    pref_id: '',
-    pref_name: '',
-    city: '',
-    area: '',
-    strt: ''
-}
 
 AjaxZip3.PREFMAP = [
     null,       '北海道',   '青森県',   '岩手県',   '宮城県',
@@ -233,8 +226,12 @@ function zipdata(data){
 };
 
 AjaxZip3.getSimple = function(zip3, zip4, callback) {
-    if (!AjaxZip3.isNumber(zip3) || !AjaxZip3.isNumber(zip4) || typeof callback !== 'function') callback(AjaxZip3.addr_obj);
-    if ((zip3 + zip4).length !== 7) callback(AjaxZip3.addr_obj);
+    if (!AjaxZip3.isNumber(zip3)
+        || !AjaxZip3.isNumber(zip4)
+        || typeof callback !== 'function'
+        || (zip3 + zip4).length !== 7) {
+        callback({pref_id: '', pref_name: '', city: '', area: '', strt: ''});
+    }
 
     AjaxZip3.fsimple = true;
     AjaxZip3.fcallback = callback;
@@ -251,23 +248,31 @@ AjaxZip3.isNumber = function(n) {
 }
 
 AjaxZip3.createAddrObj = function(data, callback) {
+    var addr_obj = {
+        pref_id: '',
+        pref_name: '',
+        city: '',
+        area: '',
+        strt: ''
+    }
+
     var array = data[AjaxZip3.nzip];
     // Opera バグ対策：0x00800000 を超える添字は +0xff000000 されてしまう
     var opera = (AjaxZip3.nzip-0+0xff000000)+"";
     if ( ! array && data[opera] ) array = data[opera];
 
-    if ( ! array ) callback(AjaxZip3.addr_obj);
-    AjaxZip3.addr_obj.pref_id = array[0];                 // 都道府県ID
-    if ( ! AjaxZip3.addr_obj.pref_id ) callback(AjaxZip3.addr_obj);
-    AjaxZip3.addr_obj.pref_name = AjaxZip3.PREFMAP[AjaxZip3.addr_obj.pref_id];  // 都道府県名
-    if ( ! AjaxZip3.addr_obj.pref_name ) callback(AjaxZip3.addr_obj);
+    if ( ! array ) callback(addr_obj);
+    addr_obj.pref_id = array[0];                 // 都道府県ID
+    if ( ! addr_obj.pref_id ) callback(addr_obj);
+    addr_obj.pref_name = AjaxZip3.PREFMAP[addr_obj.pref_id];  // 都道府県名
+    if ( ! addr_obj.pref_name ) callback(addr_obj);
 
-    AjaxZip3.addr_obj.city = array[1];
-    if (!AjaxZip3.addr_obj.city) AjaxZip3.addr_obj.city = '';              // 市区町村名
-    AjaxZip3.addr_obj.area = array[2];
-    if (!AjaxZip3.addr_obj.area) AjaxZip3.addr_obj.area = '';              // 町域名
-    AjaxZip3.addr_obj.strt = array[3];
-    if (!AjaxZip3.addr_obj.strt) AjaxZip3.addr_obj.strt = '';              // 番地
+    addr_obj.city = array[1];
+    if (!addr_obj.city) addr_obj.city = '';              // 市区町村名
+    addr_obj.area = array[2];
+    if (!addr_obj.area) addr_obj.area = '';              // 町域名
+    addr_obj.strt = array[3];
+    if (!addr_obj.strt) addr_obj.strt = '';              // 番地
 
-    callback(AjaxZip3.addr_obj);
+    callback(addr_obj);
 }
