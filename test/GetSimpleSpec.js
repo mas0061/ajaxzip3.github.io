@@ -5,34 +5,27 @@ describe('getSimpleのテスト', function() {
 			actual = addrObj;
 			done();
 		});
-	}
+	};
 
 	afterEach(function() {
 		actual = null;
-		AjaxZip3.addr_obj = {
-        pref_id: '',
-        pref_name: '',
-        city: '',
-        area: '',
-        strt: ''
-		}
 	});
 
 	describe('正常系テスト', function() {
 		beforeEach(function(done) {
-			var zip3 = "252";
-			var zip4 = "0239"
+			var zip3 = "100";
+			var zip4 = "0005";
 			when(zip3, zip4, done);
 		});
 
-		it('2520239を与えたら相模原の中央が返る', function() {
+		it('1000005を与えたら東京の丸の内が返る', function() {
 			var expectObj = {
-	      pref_id: 14,
-	      pref_name: '神奈川県',
-	      city: '相模原市中央区',
-	      area: '中央',
+	      pref_id: 13,
+	      pref_name: '東京都',
+	      city: '千代田区',
+	      area: '丸の内',
 	      strt: ''
-			}
+			};
 
 			expect(actual).toEqual(expectObj);
 		});
@@ -41,8 +34,8 @@ describe('getSimpleのテスト', function() {
 	describe('異常系テスト', function() {
 		describe('下4桁が存在しない郵便番号を与えたら', function() {
 			beforeEach(function(done) {
-				var zip3 = "252";
-				var zip4 = "9999"
+				var zip3 = "100";
+				var zip4 = "9999";
 				when(zip3, zip4, done);
 			});
 
@@ -53,7 +46,7 @@ describe('getSimpleのテスト', function() {
 		      city: '',
 		      area: '',
 		      strt: ''
-				}
+				};
 
 				expect(actual).toEqual(expectObj);
 			});
@@ -62,7 +55,7 @@ describe('getSimpleのテスト', function() {
 		describe('上3桁が存在しない郵便番号を与えたら', function() {
 			beforeEach(function(done) {
 				var zip3 = "999";
-				var zip4 = "0239"
+				var zip4 = "0005";
 				when(zip3, zip4, done);
 			});
 
@@ -73,7 +66,7 @@ describe('getSimpleのテスト', function() {
 		      city: '',
 		      area: '',
 		      strt: ''
-				}
+				};
 
 				expect(actual).toEqual(expectObj);
 			});
@@ -83,7 +76,7 @@ describe('getSimpleのテスト', function() {
 		describe('指定した郵便番号が7桁に満たない場合', function() {
 			beforeEach(function(done) {
 				var zip3 = "99";
-				var zip4 = "0239"
+				var zip4 = "0005";
 				when(zip3, zip4, done);
 			});
 
@@ -94,7 +87,7 @@ describe('getSimpleのテスト', function() {
 		      city: '',
 		      area: '',
 		      strt: ''
-				}
+				};
 
 				expect(actual).toEqual(expectObj);
 			});
