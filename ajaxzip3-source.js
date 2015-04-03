@@ -187,7 +187,7 @@ AjaxZip3.getResponseText = function ( req ) {
         }
     }
     return text;
-}
+};
 
 // フォームnameから要素を取り出す
 AjaxZip3.getElementByName = function ( elem, sibling ) {
@@ -206,7 +206,7 @@ AjaxZip3.getElementByName = function ( elem, sibling ) {
         }
     }
     return elem;
-}
+};
 
 AjaxZip3.zipjsonpquery = function(){
     var url = AjaxZip3.JSONDATA+'/zip-'+AjaxZip3.nzip.substr(0,3)+'.js';
@@ -223,7 +223,7 @@ function zipdata(data){
     } else {
         AjaxZip3.callback(data);
     }
-};
+}
 
 AjaxZip3.getSimple = function(zip3, zip4, callback) {
     if (!AjaxZip3.isNumber(zip3)
@@ -237,7 +237,7 @@ AjaxZip3.getSimple = function(zip3, zip4, callback) {
     AjaxZip3.fcallback = callback;
     AjaxZip3.nzip = zip3 + zip4;
     AjaxZip3.zipjsonpquery();
-}
+};
 
 AjaxZip3.isNumber = function(n) {
     if (typeof n != 'number' && typeof n != 'string') {
@@ -245,7 +245,7 @@ AjaxZip3.isNumber = function(n) {
     } else {
         return isFinite(n);
     }
-}
+};
 
 AjaxZip3.createAddrObj = function(data, callback) {
     var addr_obj = {
@@ -254,7 +254,7 @@ AjaxZip3.createAddrObj = function(data, callback) {
         city: '',
         area: '',
         strt: ''
-    }
+    };
 
     var array = data[AjaxZip3.nzip];
     // Opera バグ対策：0x00800000 を超える添字は +0xff000000 されてしまう
@@ -275,4 +275,4 @@ AjaxZip3.createAddrObj = function(data, callback) {
     if (!addr_obj.strt) addr_obj.strt = '';              // 番地
 
     callback(addr_obj);
-}
+};
